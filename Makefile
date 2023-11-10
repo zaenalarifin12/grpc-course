@@ -38,17 +38,17 @@ pipeline-build: pipeline-init build
 
 ## gateway ##
 
-.PHONY: clean-gateway
-clean-gateway:
-ifeq ($(OS), Windows_NT)
-	if exist "protogen\gateway" rd /s /q protogen\gateway
-	mkdir protogen\gateway\go
-	mkdir protogen\gateway\openapiv2
-else
-	rm -fR ./protogen/gateway
-	mkdir -p ./protogen/gateway/go
-	mkdir -p ./protogen/gateway/openapiv2
-endif
+#.PHONY: clean-gateway
+#clean-gateway:
+#ifeq ($(OS), Windows_NT)
+#	if exist "protogen\gateway" rd /s /q protogen\gateway
+#	mkdir protogen\gateway\go
+#	mkdir protogen\gateway\openapiv2
+#else
+#	rm -fR ./protogen/gateway
+#	mkdir -p ./protogen/gateway/go
+#	mkdir -p ./protogen/gateway/openapiv2
+#endif
 
 
 #.PHONY: protoc-go-gateway
@@ -65,8 +65,8 @@ endif
 #	./proto/resiliency/*.proto
 
 
-.PHONY: protoc-openapiv2-gateway
-protoc-openapiv2-gateway:
+#.PHONY: protoc-openapiv2-gateway
+#protoc-openapiv2-gateway:
 	#protoc -I . --openapiv2_out ./protogen/gateway/openapiv2 \
 #	--openapiv2_opt logtostderr=true \
 #	--openapiv2_opt output_format=yaml \
@@ -80,15 +80,15 @@ protoc-openapiv2-gateway:
 #	./proto/resiliency/*.proto
 
 
-.PHONY: build-gateway
-build-gateway: clean-gateway protoc-go-gateway
+#.PHONY: build-gateway
+#build-gateway: clean-gateway protoc-go-gateway
 
 
-.PHONY: pipeline-init-gateway
-pipeline-init-gateway:
+#.PHONY: pipeline-init-gateway
+#pipeline-init-gateway:
 #	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
 #	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
 
 
-.PHONY: pipeline-build-gateway
-pipeline-build-gateway: pipeline-init-gateway build-gateway protoc-openapiv2-gateway
+#.PHONY: pipeline-build-gateway
+#pipeline-build-gateway: pipeline-init-gateway build-gateway protoc-openapiv2-gateway
