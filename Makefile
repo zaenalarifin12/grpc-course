@@ -80,6 +80,7 @@ protoc-openapiv2-gateway:
 
 #	./proto/bank/*.proto ./proto/bank/type/*.proto \
 #	./proto/resiliency/*.proto
+# remove
 
 
 .PHONY: build-gateway
