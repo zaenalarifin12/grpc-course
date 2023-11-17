@@ -22,6 +22,7 @@ const (
 	BankService_GetCurrentBalance_FullMethodName    = "/bank.BankService/GetCurrentBalance"
 	BankService_FetchExchangeRates_FullMethodName   = "/bank.BankService/FetchExchangeRates"
 	BankService_SummarizeTransaction_FullMethodName = "/bank.BankService/SummarizeTransaction"
+	BankService_TransferMultiple_FullMethodName     = "/bank.BankService/TransferMultiple"
 )
 
 // BankServiceClient is the client API for BankService service.
@@ -31,6 +32,7 @@ type BankServiceClient interface {
 	GetCurrentBalance(ctx context.Context, in *CurrentBalanceRequest, opts ...grpc.CallOption) (*CurrentBalanceResponse, error)
 	FetchExchangeRates(ctx context.Context, in *ExchangeRateRequest, opts ...grpc.CallOption) (BankService_FetchExchangeRatesClient, error)
 	SummarizeTransaction(ctx context.Context, opts ...grpc.CallOption) (BankService_SummarizeTransactionClient, error)
+	TransferMultiple(ctx context.Context, opts ...grpc.CallOption) (BankService_TransferMultipleClient, error)
 }
 
 type bankServiceClient struct {
@@ -116,6 +118,37 @@ func (x *bankServiceSummarizeTransactionClient) CloseAndRecv() (*TransactionSumm
 	return m, nil
 }
 
+func (c *bankServiceClient) TransferMultiple(ctx context.Context, opts ...grpc.CallOption) (BankService_TransferMultipleClient, error) {
+	stream, err := c.cc.NewStream(ctx, &BankService_ServiceDesc.Streams[2], BankService_TransferMultiple_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &bankServiceTransferMultipleClient{stream}
+	return x, nil
+}
+
+type BankService_TransferMultipleClient interface {
+	Send(*TransferRequest) error
+	Recv() (*TransferResponse, error)
+	grpc.ClientStream
+}
+
+type bankServiceTransferMultipleClient struct {
+	grpc.ClientStream
+}
+
+func (x *bankServiceTransferMultipleClient) Send(m *TransferRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *bankServiceTransferMultipleClient) Recv() (*TransferResponse, error) {
+	m := new(TransferResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // BankServiceServer is the server API for BankService service.
 // All implementations must embed UnimplementedBankServiceServer
 // for forward compatibility
@@ -123,6 +156,7 @@ type BankServiceServer interface {
 	GetCurrentBalance(context.Context, *CurrentBalanceRequest) (*CurrentBalanceResponse, error)
 	FetchExchangeRates(*ExchangeRateRequest, BankService_FetchExchangeRatesServer) error
 	SummarizeTransaction(BankService_SummarizeTransactionServer) error
+	TransferMultiple(BankService_TransferMultipleServer) error
 	mustEmbedUnimplementedBankServiceServer()
 }
 
@@ -138,6 +172,9 @@ func (UnimplementedBankServiceServer) FetchExchangeRates(*ExchangeRateRequest, B
 }
 func (UnimplementedBankServiceServer) SummarizeTransaction(BankService_SummarizeTransactionServer) error {
 	return status.Errorf(codes.Unimplemented, "method SummarizeTransaction not implemented")
+}
+func (UnimplementedBankServiceServer) TransferMultiple(BankService_TransferMultipleServer) error {
+	return status.Errorf(codes.Unimplemented, "method TransferMultiple not implemented")
 }
 func (UnimplementedBankServiceServer) mustEmbedUnimplementedBankServiceServer() {}
 
@@ -217,6 +254,32 @@ func (x *bankServiceSummarizeTransactionServer) Recv() (*Transaction, error) {
 	return m, nil
 }
 
+func _BankService_TransferMultiple_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(BankServiceServer).TransferMultiple(&bankServiceTransferMultipleServer{stream})
+}
+
+type BankService_TransferMultipleServer interface {
+	Send(*TransferResponse) error
+	Recv() (*TransferRequest, error)
+	grpc.ServerStream
+}
+
+type bankServiceTransferMultipleServer struct {
+	grpc.ServerStream
+}
+
+func (x *bankServiceTransferMultipleServer) Send(m *TransferResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *bankServiceTransferMultipleServer) Recv() (*TransferRequest, error) {
+	m := new(TransferRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // BankService_ServiceDesc is the grpc.ServiceDesc for BankService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -238,6 +301,12 @@ var BankService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "SummarizeTransaction",
 			Handler:       _BankService_SummarizeTransaction_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "TransferMultiple",
+			Handler:       _BankService_TransferMultiple_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},
