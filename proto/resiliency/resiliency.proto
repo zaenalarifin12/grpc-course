@@ -3,6 +3,7 @@ syntax = "proto3";
 package resiliency;
 
 import "proto/protoc-gen-openapiv2/options/annotations.proto";
+import "proto/google/api/annotations.proto";
 
 option go_package = "github.com/zaenalarifin12/grpc-course/protogen/go/resiliency";
 
@@ -63,8 +64,7 @@ service ResiliencyService {
     };
   }
 
-  rpc StreamingResiliency(ResiliencyRequest)
-      returns (stream ResiliencyResponse) {
+  rpc StreamingResiliency(ResiliencyRequest) returns (stream ResiliencyResponse) {
     option (google.api.http) = {
       get: "/api/resiliency/v1/server_streaming/{min_delay_second}/{max_delay_second}"
     };
