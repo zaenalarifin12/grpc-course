@@ -7,7 +7,7 @@ http:
       get: /bank/v1/account/current_balance
     - selector: bank.BankService.FetchExchangeRates
       get: /bank/v1/exchange_rates
-    - selector: bank.BankService.SummarizeTransactions
+    - selector: bank.BankService.SummarizeTransaction
       post: /bank/v1/transaction/summarize
       body: "*"
     - selector: bank.BankService.TransferMultiple
